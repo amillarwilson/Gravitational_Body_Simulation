@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+
 #set G
 G = 6.6743e-11
 
@@ -146,8 +147,12 @@ bodies = initialise_random_bodies(n_bodies)
 
 #initialise plot
 fig, ax = plt.subplots()
-scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies])
+scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
+                     c=[np.abs(np.linalg.norm(body.vel)) for body in bodies], cmap = 'jet',
+                     s=[(body.mass/1e9) for body in bodies])
+
 ax.set_title('4 Randomly positioned bodies')
+cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
 #dynamically set axis limits so the plot focuses in on the action
 ax.set_xlim(min(body.pos[0] for body in bodies) - 0.1, max(body.pos[0] for body in bodies) + 0.1)
 ax.set_ylim(min(body.pos[1] for body in bodies) - 0.1, max(body.pos[1] for body in bodies) + 0.1)
@@ -175,8 +180,12 @@ bodies = initialise_binary_system()
 
 #initialise plot
 fig, ax = plt.subplots()
-scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies])
+scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
+                     c=[np.abs(np.linalg.norm(body.vel)) for body in bodies], cmap = 'jet',
+                     s=[(body.mass/1e8) for body in bodies])
+cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
 ax.set_title('An unstable binary system')
+
 #static axis limits, the smulation will behave the same way each time and the best action occurs between 0,0 and 1,1
 ax.set_xlim(0,1)
 ax.set_ylim(0,1)
