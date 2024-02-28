@@ -195,4 +195,6 @@ plt.show()
 bodies = []
 
 #to do: 
+#1) refactor the above fig generation and display into a function to make it easier to call
 #2) move all code after line 109 to dedicated running script
+#3) add GUI
