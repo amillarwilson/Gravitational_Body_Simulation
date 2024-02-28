@@ -131,6 +131,9 @@ def update(frame):
 
 
 #sections to move to main running file and possibly refactor or add to TKINTER to make it more accessible
+#so far there are two sims: 4 random bodies and an eliptical, unstable orbit like a black hole
+#I need to refactor the simulation calls later to easily call the function, will also make
+#GUi-ing the thing easier
 
 #random bodies
 
@@ -144,6 +147,8 @@ bodies = initialise_random_bodies(n_bodies)
 #initialise plot
 fig, ax = plt.subplots()
 scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies])
+ax.set_title('4 Randomly positioned bodies')
+#dynamically set axis limits so the plot focuses in on the action
 ax.set_xlim(min(body.pos[0] for body in bodies) - 0.1, max(body.pos[0] for body in bodies) + 0.1)
 ax.set_ylim(min(body.pos[1] for body in bodies) - 0.1, max(body.pos[1] for body in bodies) + 0.1)
 
@@ -171,6 +176,8 @@ bodies = initialise_binary_system()
 #initialise plot
 fig, ax = plt.subplots()
 scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies])
+ax.set_title('An unstable binary system')
+#static axis limits, the smulation will behave the same way each time and the best action occurs between 0,0 and 1,1
 ax.set_xlim(0,1)
 ax.set_ylim(0,1)
 
