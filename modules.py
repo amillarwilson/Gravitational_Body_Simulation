@@ -121,10 +121,23 @@ def initialise_binary_system():
 #update plot
 def update(frame):
     """
-    Function which runs position_update and updates the plot
+    Function which runs position_update and updates the plot and colour
     """
     position_update(bodies, dt)
     scatter.set_offsets(np.array([[body.pos[0], body.pos[1]] for body in bodies]))
+    
+    #update colour
+    #get absolute vels
+    vel_abs = [np.linalg.norm(body.vel) for body in bodies]
+    
+    # Update scatter plot with new colormap based on absolute velocity
+    scatter.set_array(vel_abs)
+    scatter.set_cmap('viridis')  # Set the colormap
+
+    #update colourbar limits to ensure distinct colours
+    #I have set this up more dynamically previously, but that makes N<3 body simulation colour schemes uninformative 
+    scatter.set_clim(vmin=0, vmax=2)
+
 
     return [scatter]
     
@@ -152,7 +165,11 @@ scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in 
                      s=[(body.mass/1e9) for body in bodies])
 
 ax.set_title('4 Randomly positioned bodies')
+
+#add colourbar
 cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
+
+
 #dynamically set axis limits so the plot focuses in on the action
 ax.set_xlim(min(body.pos[0] for body in bodies) - 0.1, max(body.pos[0] for body in bodies) + 0.1)
 ax.set_ylim(min(body.pos[1] for body in bodies) - 0.1, max(body.pos[1] for body in bodies) + 0.1)
@@ -204,7 +221,7 @@ plt.show()
 bodies = []
 
 #to do: 
-#0) colours dont seem to update with the simulation, maybe update the updater algorithm? or the plotting call?
+
 #1) refactor the above fig generation and display into a function to make it easier to call
 #2) move all code after line 109 to dedicated running script
 #3) add GUI
