@@ -4,18 +4,51 @@
     Though Newton first published his laws of gravitation in July 1687, it is still mathematically impossible to predict all future locations of any more than 2 bodies, thus the famous 3 body problem, 
     here expanded to an N body problem. 
     <br />
-    This repo contains code which uses Newton's law of Universal gravitation to overcome this mathematical limit, applying the algorithm below to each body sequentially across time, starting from T=0.
     <br />
-    ## Newton's Law of Universal Gravitation
-
-    The force of attraction between two point masses \(m_1\) and \(m_2\) separated by a distance \(r\) is given by Newton's law of universal gravitation:
-    
-    \[ F = \frac{{G \cdot m_1 \cdot m_2}}{{r^2}} \]
-    
-    Where:
-    - \( F \) is the force of attraction,
-    - \( G \) is the gravitational constant,
-    - \( m_1 \) and \( m_2 \) are the masses of the two objects, and
-    - \( r \) is the distance between the centers of the two objects.
   </p>
+  
+  <p align="left">
+        This repo contains code which uses Newton's law of Universal gravitation to overcome this mathematical limit, applying the algorithm below to each body sequentially across time, starting from T=0, to first calculate the forces each body exerts on the others.
+    <br />
+   <br />
+   </p>
+    
+**Newton's Law of Universal Gravitation**
+
+```math
+\[ F = \frac{{G \cdot m_1 \cdot m_2}}{{r^2}} \]
+```
+Where:
+- \( F \) is the force of attraction,
+- \( G \) is the gravitational constant,
+- \( m1 \) and \( m2 \) are the masses of the two objects whose force upon eachother are currently being calculated, and
+- \( r \) is the distance between the centers of the two objects.
+
+  <p align="left">
+    <br />
+      <br />
+        The resultant force experienced by each body can then be fed into Newton's second law of motion, Force=mass * acceleration ($F=ma$), reorganised here to $a=F/m$, to calculate the acceleration each body undergoes. This acceleration is then used to calculate the body's updated velocity at each time step, using change in speed = acceleration * time ($delta s=a*t$), which is then used to calculate the direction of and distance travelled by the body by, again, multiplying by the integration timestep. These equations are carried out almost simultaneously using the combined function below.
+    <br />
+    <br />
+
+**Change in body velocity**
+
+```math
+\[ \delta v = \frac{{\left(\frac{{G \cdot m_1 \cdot m_2}}{{r^2}}\right)}}{{m_1}}*dt \]
+```
+
+**Distance travelled by body**
+```math
+\[ d = \frac{{\left(\frac{{G \cdot m_1 \cdot m_2}}{{r^2}}\right)}}{{m_1}}*dt^2 \]
+```
+Implemented as $d = \delta v * dt$
+
+Where:
+- \(\delta v \) is the change in velocity
+- \( G \) is the gravitational constant,
+- \( m1 \) and \( m2 \) are the masses of the two objects whose force upon eachother are currently being calculated
+- \( r \) is the distance between the centers of the two objects.
+- \( dt \) is the timestep occuring between each simulation frame, and
+- \( d \) is the distance travelled by the body.
+
 </div>
