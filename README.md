@@ -8,7 +8,7 @@
   </p>
   
   <p align="left">
-        This repo contains code which uses Newton's law of Universal gravitation to overcome this mathematical limit, applying the algorithm below to each body sequentially across time, starting from T=0, to first calculate the forces each body exerts on the others.
+        This repo contains code which uses Newton's law of Universal gravitation to circumvent this mathematical limit, applying the algorithm below to each body sequentially across time, starting from T=0, to first calculate the forces each body exerts on the others.
     <br />
    <br />
    </p>
