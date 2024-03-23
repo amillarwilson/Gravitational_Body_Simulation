@@ -1,14 +1,14 @@
 <h3 align="center">Gravitational Body Simulator</h3>
 
   <p align="center">
-    Though Newton first published his laws of gravitation in July 1687, it is still mathematically impossible to predict all future locations of any more than 2 bodies, thus the famous 3 body problem, 
+    Though Newton first published his laws of gravitation in July 1687, given the complexity of >2 body systems it is still mathematically impossible to predict all future locations of any more than 2 bodies, thus the famous 3 body problem, 
     here expanded to an N body problem. 
     <br />
     <br />
   </p>
   
   <p align="left">
-        This repo contains code which uses Newton's law of Universal gravitation to circumvent this mathematical limit, applying the algorithm below to each body sequentially across time, starting from T=0, to first calculate the forces each body exerts on the others.
+        This repo contains code which uses Newton's law of Universal gravitation, and laws of motion, to circumvent this mathematical limit, applying the algorithms below to each body sequentially across time, to instead calculate the movement of each body at each timestep. First, the forces acting on each body from the gravitation of all other bodies is calulcated.
     <br />
    <br />
    </p>
