@@ -132,7 +132,7 @@ def update(frame):
     
     # Update scatter plot with new colormap based on absolute velocity
     scatter.set_array(vel_abs)
-    scatter.set_cmap('viridis')  # Set the colormap
+    scatter.set_cmap('jet')  # Set the colormap
 
     #update colourbar limits to ensure distinct colours
     #I have set this up more dynamically previously, but that makes N<3 body simulation colour schemes uninformative 
@@ -161,7 +161,6 @@ bodies = initialise_random_bodies(n_bodies)
 #initialise plot
 fig, ax = plt.subplots()
 scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
-                     c=[np.abs(np.linalg.norm(body.vel)) for body in bodies], cmap = 'jet',
                      s=[(body.mass/1e9) for body in bodies])
 
 ax.set_title('4 Randomly positioned bodies')
@@ -198,7 +197,6 @@ bodies = initialise_binary_system()
 #initialise plot
 fig, ax = plt.subplots()
 scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
-                     c=[np.abs(np.linalg.norm(body.vel)) for body in bodies], cmap = 'jet',
                      s=[(body.mass/1e8) for body in bodies])
 cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
 ax.set_title('An unstable binary system')
