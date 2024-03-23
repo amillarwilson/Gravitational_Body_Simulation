@@ -30,7 +30,7 @@ Where:
         The resultant force experienced by each body can then be fed into Newton's second law of motion, Force=mass * acceleration ($F=ma$), reorganised here to $a=F/m$, to calculate the acceleration each body undergoes. This acceleration is then used to calculate the body's updated velocity at each time step, using change in speed = acceleration * time ($\delta s=a*t$), which is then used to calculate the direction of and distance travelled by the body by, again, multiplying by the integration timestep. These equations are carried out almost simultaneously using the combined function below.
     <br />
     <br />
-
+   </p>
 **Change in body velocity**
 
 ```math
@@ -51,4 +51,11 @@ Where:
 - \( dt \) is the timestep occuring between each simulation frame, and
 - \( d \) is the distance travelled by the body.
 
+  <p align="left">
+    <br />
+      <br />
+        To maximise accuracy, an RK4 method has been implemented which calculates the changes in velocity 4 times in sequence, passing an adjusted result from the $nth$ layer to the $n+1$ layer, and applies a weighted average, with the first two layers recieving more weight. Though this does increase required compute power, it had no user-discernable impact on performance so was considered a good trade-off.
+    <br />
+    <br />
+   </p>
 </div>
