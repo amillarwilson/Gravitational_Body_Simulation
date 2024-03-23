@@ -27,24 +27,24 @@ Where:
   <p align="left">
     <br />
       <br />
-        The resultant force experienced by each body can then be fed into Newton's second law of motion, Force=mass * acceleration ($F=ma$), reorganised here to $a=F/m$, to calculate the acceleration each body undergoes. This acceleration is then used to calculate the body's updated velocity at each time step, using change in speed = acceleration * time ($\delta s=a*t$), which is then used to calculate the direction of and distance travelled by the body by, again, multiplying by the integration timestep. These equations are carried out almost simultaneously using the combined function below.
+        The resultant force experienced by each body can then be fed into Newton's second law of motion, Force=mass * acceleration ($F=ma$), reorganised here to $a=F/m$, to calculate the acceleration each body undergoes. This acceleration is then used to calculate the body's updated velocity at each time step, using change in speed = acceleration * time ($\Delta s=a*t$), which is then used to calculate the direction of and distance travelled by the body by, again, multiplying by the integration timestep. These equations are carried out almost simultaneously using the combined function below.
     <br />
     <br />
    </p>
 **Change in body velocity**
 
 ```math
-\[ \delta v = \frac{{\left(\frac{{G \cdot m_1 \cdot m_2}}{{r^2}}\right)}}{{m_1}}*dt \]
+\[ \Delta v = \frac{{\left(\frac{{G \cdot m_1 \cdot m_2}}{{r^2}}\right)}}{{m_1}}*dt \]
 ```
 
 **Distance travelled by body**
 ```math
 \[ d = \frac{{\left(\frac{{G \cdot m_1 \cdot m_2}}{{r^2}}\right)}}{{m_1}}*dt^2 \]
 ```
-Implemented as $d = \delta v * dt$
+Implemented as $d = \Delta v * dt$
 
 Where:
-- \(\delta v \) is the change in velocity
+- \($\Delta$ v \) is the change in velocity
 - \( G \) is the gravitational constant,
 - \( m1 \) and \( m2 \) are the masses of the two objects whose force upon eachother are currently being calculated
 - \( r \) is the distance between the centers of the two objects.
