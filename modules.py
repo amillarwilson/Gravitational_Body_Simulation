@@ -118,6 +118,66 @@ def initialise_binary_system():
 
     return [body1, body2]
 
+def initialise_custom_bodies(N, masses, poses, vels):
+    #A function to intialise custom systems - default is binary system
+
+    bodies=[]
+
+    for i in range(0,N-1):
+        bodies.append(Body(masses[i],poses[i],vels[i]))
+    
+    return bodies
+
+
+def plot_system(masses=[2e9,2e10], poses=[np.array([0.2, 0.5]),np.array([0.5, 0.5])], 
+                vels=[np.array([0.3, 0.5]), np.array([0.0001, 0.0001])], N=2, step=0.01,
+                plot_lims=[[None,None],[None,None]]):
+    """
+    A function to plot the system caluclated above.
+    inputs: 
+    N - number of bodies,
+    dt - integration step
+    plot_lims - plot limits
+    """
+
+    #initialise bodies
+    bodies = initialise_custom_bodies(N, masses, poses, vels)
+
+    #initialise plot
+    fig, ax = plt.subplots()
+    scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
+                        s=[(body.mass/1e9) for body in bodies])
+    
+    #set X,Y limits - if no limits given, set dynamically by max X and Y position
+    if plot_lims==[[None,None],[None,None]]:
+        ax.set_xlim(min(body.pos[0] for body in bodies) - 0.1, max(body.pos[0] for body in bodies) + 0.1)
+        ax.set_ylim(min(body.pos[1] for body in bodies) - 0.1, max(body.pos[1] for body in bodies) + 0.1)
+
+    else:
+        ax.set_xlim(plot_lims[0][0], plot_lims[0][1])
+        ax.set_xlim(plot_lims[1][0], plot_lims[1][1])
+
+
+    #set title
+    ax.set_title(f'{N} gravitational bodies interacting')
+
+    #add colourbar
+    cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
+    
+    #set integration step
+    dt = step
+
+    #animate
+    animation = FuncAnimation(fig, update, frames = 100, interval = 50, blit = True)
+
+
+    #show animation
+    plt.show()
+
+    #clear bodies
+    bodies = []
+
+
 #update plot
 def update(frame):
     """
@@ -142,6 +202,7 @@ def update(frame):
     return [scatter]
     
 
+plot_system()
 
 
 #sections to move to main running file and possibly refactor or add to TKINTER to make it more accessible
@@ -220,10 +281,15 @@ bodies = []
 
 #to do: 
 
+#0) fix bug in new system generator functions!!
+
 #1) refactor the above fig generation and display into a function to make it easier to call
+#1a) test new fig generator with default args to see if it outputs the binary system and if it does, delete binary system code
 #2) move all code after line 109 to dedicated running script
 #3) put all hardocded simulation parameters into a .json file - include parameters like dt size, window size (because youve restricted
 # the window size in the two body sim), planet sizes, planet positions, initial velocities
 #4) add GUI - use tkinter, include input for body number, then inputs for each body size, position, and intiial velocities (X and Y)
 #       maybe also some optional input for window size and integration step (dt)? but if they dont input anything its just the
 #       default used (dt=1, window size = max location)
+#5) error catching - have they input as many masses, velocities, and positions as they have number of bodies? are they all
+#   of the right datatype?
