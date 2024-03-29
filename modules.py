@@ -222,4 +222,8 @@ bodies = []
 
 #1) refactor the above fig generation and display into a function to make it easier to call
 #2) move all code after line 109 to dedicated running script
-#3) add GUI
+#3) put all hardocded simulation parameters into a .json file - include parameters like dt size, window size (because youve restricted
+# the window size in the two body sim), planet sizes, planet positions, initial velocities
+#4) add GUI - use tkinter, include input for body number, then inputs for each body size, position, and intiial velocities (X and Y)
+#       maybe also some optional input for window size and integration step (dt)? but if they dont input anything its just the
+#       default used (dt=1, window size = max location)
