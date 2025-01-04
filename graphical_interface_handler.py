@@ -6,7 +6,8 @@ have multiple panels, so at the top you enter N bodies and then N boxes populate
 masses, positions, and velocities
 """
 
-debug_switch = False
+
+debug_switch = True
 
 import tkinter as tk
 from tkinter import ttk
@@ -161,4 +162,8 @@ entries = []
 # Run the application
 root.mainloop()
 
-print(requested_gravitational_system_data)
+if debug_switch == True:
+    print("requested data:")
+    for body in requested_gravitational_system_data:
+        print(f"{body}:")
+        print(requested_gravitational_system_data[body])
