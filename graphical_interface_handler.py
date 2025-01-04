@@ -64,6 +64,13 @@ def create_fields():
 
         entries.append(body_entries)
 
+    # Add trace to enable/disable the Submit button
+    for body_entries in entries:
+        for key, entry in body_entries.items():
+            entry.bind("<KeyRelease>", check_form_complete)
+
+    # Disable the Submit button initially
+    submit_button.config(state="disabled")
 
 def collect_data():
     """Collect data from all entry fields, store it in a dictionary, and close the window."""
@@ -96,10 +103,24 @@ def collect_data():
 
 def validate_numeric_input(new_value):
     """Validate that the input is a valid numeric value (including negative numbers)."""
+    #are all numbers okay?
     if new_value == "" or new_value == "-" or new_value.replace("-", "", 1).replace(".", "", 1).isdigit():
         return True
+        
     return False
 
+def check_form_complete(event=None):
+    """Enable the Submit button if all fields are completed and valid."""
+    try:
+        for body_entries in entries:
+            for key, entry in body_entries.items():
+                value = entry.get()
+                if not value or not validate_numeric_input(value):
+                    submit_button.config(state="disabled")
+                    return
+        submit_button.config(state="normal")
+    except Exception:
+        submit_button.config(state="disabled")
 
 # Create main application window
 root = tk.Tk()
@@ -107,6 +128,8 @@ root.title("Custom gravitational body simulation")
 
 # Register validation function
 numeric_validate = root.register(validate_numeric_input)
+
+check_form_complete_validate = root.register(check_form_complete)
 
 # Input for number of bodies
 top_frame = ttk.Frame(root, padding=10)
@@ -129,7 +152,7 @@ fields_frame = ttk.Frame(root, padding=10)
 fields_frame.pack(fill="both", expand=True)
 
 # Submit button
-submit_button = ttk.Button(root, text="Get going!", command=collect_data)
+submit_button = ttk.Button(root, text="Get going!", command=collect_data, state="disabled")
 submit_button.pack(pady=10)
 
 # Initialize entries list to store entry widgets
