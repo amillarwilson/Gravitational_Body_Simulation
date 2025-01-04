@@ -176,7 +176,7 @@ class System:
 
         #initialise plot
         fig, ax = plt.subplots()
-        scatter = ax.scatter([body.pos[0] for body in self.bodies], [body.pos[1] for body in self.bodies],
+        self.planet_plot = ax.scatter([body.pos[0] for body in self.bodies], [body.pos[1] for body in self.bodies],
                             s=[(body.mass/1e9) for body in self.bodies])
         
         #set X,Y limits - if no limits given, set dynamically by max X and Y position
@@ -193,13 +193,13 @@ class System:
         ax.set_title(f'{N} gravitational bodies interacting')
 
         #add colourbar
-        cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
+        cbar = plt.colorbar(self.planet_plot, ax=ax, label='Velocity Magnitude')
         
         #set integration step
-        dt = step
+        self.dt = step
 
         #animate
-        animation = FuncAnimation(fig, update, frames = 100, interval = 50, blit = True)
+        animation = FuncAnimation(fig, self.update, frames = 100, interval = 50, blit = True)
 
 
         #show animation
@@ -214,23 +214,23 @@ class System:
         """
         Function which runs position_update and updates the plot and colour
         """
-        self.position_update(bodies, dt)
-        scatter.set_offsets(np.array([[body.pos[0], body.pos[1]] for body in self.bodies]))
+        self.position_update(self.bodies, self.dt)
+        self.planet_plot.set_offsets(np.array([[body.pos[0], body.pos[1]] for body in self.bodies]))
         
         #update colour
         #get absolute vels
         vel_abs = [np.linalg.norm(body.vel) for body in self.bodies]
         
         # Update scatter plot with new colormap based on absolute velocity
-        scatter.set_array(vel_abs)
-        scatter.set_cmap('jet')  # Set the colormap
+        self.planet_plot.set_array(vel_abs)
+        self.planet_plot.set_cmap('jet')  # Set the colormap
 
         #update colourbar limits to ensure distinct colours
         #I have set this up more dynamically previously, but that makes N<3 body simulation colour schemes uninformative 
-        scatter.set_clim(vmin=0, vmax=2)
+        self.planet_plot.set_clim(vmin=0, vmax=2)
 
 
-        return [scatter]
+        return [self.planet_plot]
     
 
 system_1 = System("random")
@@ -238,13 +238,15 @@ system_1 = System("random")
 system_1.plot_system()
 
 
+#custom testing
+
 #sections to move to main running file and possibly refactor or add to TKINTER to make it more accessible
 #so far there are two sims: 4 random bodies and an eliptical, unstable orbit like a black hole
 #I need to refactor the simulation calls later to easily call the function, will also make
 #GUi-ing the thing easier
 
 #random bodies
-
+"""
 #set "N"
 n_bodies = 4
 
@@ -326,3 +328,5 @@ bodies = []
 #       default used (dt=1, window size = max location)
 #5) error catching - have they input as many masses, velocities, and positions as they have number of bodies? are they all
 #   of the right datatype?
+
+"""
