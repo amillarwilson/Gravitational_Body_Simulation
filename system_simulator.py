@@ -86,6 +86,9 @@ class System:
                     def initialise_custom_bodies(N, masses, poses, vels):
                     #A function to intialise custom systems - default is binary system
 
+                    #will eventually be used in tandem with the GUI, but for now it is fed variable
+                    #values from function calls
+
                     bodies=[]
 
                     for i in range(0,N-1):
