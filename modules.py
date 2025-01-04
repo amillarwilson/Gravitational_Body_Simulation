@@ -161,9 +161,7 @@ class System:
             bodies[i].vel += (k1v + 2 * k2v + 2 * k3v + k4v) /6
             bodies[i].pos += (k1x + 2 * k2x + 2 * k3x + k4x) /6
 
-    def plot_system(self, masses=[2e9,2e10], poses=[np.array([0.2, 0.5]),np.array([0.5, 0.5])], 
-                    vels=[np.array([0.3, 0.5]), np.array([0.0001, 0.0001])], N=2, step=0.01,
-                    plot_lims=[[None,None],[None,None]]):
+    def plot_system(self, N=2, step=0.01, plot_lims=[[None,None],[None,None]]):
         """
         A function to plot the system caluclated above.
         inputs: 
