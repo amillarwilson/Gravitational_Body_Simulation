@@ -33,7 +33,7 @@ class System:
     """
 
     
-    def __init__(self, num_bodies = 3, system_type = "binary"):
+    def __init__(self, system_type = "binary", num_bodies = 3):
         if type(num_bodies) is int:
             self.num_bodies = num_bodies
         else:
@@ -46,11 +46,13 @@ class System:
 
             if self.system_type == "random":
                 #function to initialise random bodies
-                def initialise_random_bodies(num_bodies):
+                def initialise_random_bodies():
                     """
                     a function which takes in the number of bodies and
                     instantiates a Body
                     """
+                    self.num_bodies = np.random.randint(50)
+
                     self.bodies = []
                     for _ in range(num_bodies):
                         #random mass within a reasonable range
@@ -59,11 +61,13 @@ class System:
                         vel = np.zeros(2) #initial velocity of 0, may be customisable in later updates
                         self.bodies.append(Body(mass, pos, vel))
                 
-                initialise_random_bodies(self.num_bodies)
+                initialise_random_bodies()
 
             elif self.system_type == "binary":
                 #function to initialise an unstable eliptical binary system
                 def initialise_binary_system():
+                    self.num_bodies = 2
+                    
                     mass_body1 = 2e9  # Mass of the first body
                     mass_body2 = 2e10  # Mass of the second body
 
@@ -164,7 +168,7 @@ class System:
             bodies[i].vel += (k1v + 2 * k2v + 2 * k3v + k4v) /6
             bodies[i].pos += (k1x + 2 * k2x + 2 * k3x + k4x) /6
 
-    def plot_system(self, N=2, step=0.01, plot_lims=[[None,None],[None,None]]):
+    def plot_system(self, step=0.01, plot_lims=[[None,None],[None,None]]):
         """
         A function to plot the system caluclated above.
         inputs: 
@@ -191,7 +195,7 @@ class System:
 
 
         #set title
-        ax.set_title(f'{N} gravitational bodies interacting')
+        ax.set_title(f'{self.num_bodies} gravitational bodies interacting')
 
         #add colourbar
         cbar = plt.colorbar(self.planet_plot, ax=ax, label='Velocity Magnitude')
@@ -234,7 +238,7 @@ class System:
         return [self.planet_plot]
     
 
-system_1 = System("random")
+system_1 = System("binary")
 
 system_1.plot_system()
 
