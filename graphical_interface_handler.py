@@ -9,12 +9,46 @@ masses, positions, and velocities
 
 debug_switch = True
 
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
+def system_type_selected():
+    """handles system type selection"""
+    global selected_system_type
+    selected_system_type = system_type_var.get()
 
-def create_fields():
+    if selected_system_type in ["binary", "random"]:
+        system_type_selector.destroy()
+    else:
+        # Hide system type frame and show body number frame
+        system_type_frame.pack_forget()
+        top_frame.pack(fill="x", padx=10, pady=5)
+        error_label.pack(pady=5)
+        fields_frame.pack(fill="both", expand=True)
+        system_type_selector.destroy()
+
+system_type_selector = tk.Tk()
+system_type_selector.title("Custom gravitational body simulation")
+
+# Create system type selection frame
+system_type_frame = ttk.Frame(system_type_selector, padding=10)
+system_type_frame.pack(fill="x", padx=10, pady=5)
+
+ttk.Label(system_type_frame, text="Select system type:").pack(pady=5)
+system_type_var = tk.StringVar(value="custom")
+for system_type in ["binary", "random", "custom"]:
+    ttk.Radiobutton(system_type_frame, 
+                    text=system_type.capitalize(),
+                    variable=system_type_var,
+                    value=system_type).pack(pady=2)
+
+ttk.Button(system_type_frame, 
+          text="Continue",
+          command=system_type_selected).pack(pady=10)
+
+def create_custom_system_fields():
     """Generate fields for N bodies."""
     # Clear previous fields
     for widget in fields_frame.winfo_children():
@@ -123,6 +157,7 @@ def check_form_complete(event=None):
     except Exception:
         submit_button.config(state="disabled")
 
+
 # Create main application window
 root = tk.Tk()
 root.title("Custom gravitational body simulation")
@@ -141,7 +176,7 @@ n_bodies_var = tk.StringVar()
 n_bodies_entry = ttk.Entry(top_frame, textvariable=n_bodies_var, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
 n_bodies_entry.grid(row=0, column=1, padx=5)
 
-generate_button = ttk.Button(top_frame, text="Generate bodies", command=create_fields)
+generate_button = ttk.Button(top_frame, text="Generate bodies", command=create_custom_system_fields)
 generate_button.grid(row=0, column=2, padx=5)
 
 # Error label
@@ -162,8 +197,10 @@ entries = []
 # Run the application
 root.mainloop()
 
-if debug_switch == True:
-    print("requested data:")
-    for body in requested_gravitational_system_data:
-        print(f"{body}:")
-        print(requested_gravitational_system_data[body])
+if debug_switch:
+    print("System type selected:", selected_system_type)
+    if selected_system_type == "custom" and 'requested_gravitational_system_data' in globals():
+        print("requested data:")
+        for body in requested_gravitational_system_data:
+            print(f"{body}:")
+            print(requested_gravitational_system_data[body])
