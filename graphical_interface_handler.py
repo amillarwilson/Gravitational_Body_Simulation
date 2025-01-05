@@ -1,114 +1,111 @@
-"""
-contains the code to handle the graphical interface (TKINTER)
-
-plan:
-have multiple panels, so at the top you enter N bodies and then N boxes populate with spaces for
-masses, positions, and velocities
-"""
-
-
-debug_switch = True
-
-
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-def system_type_selected():
-    """handles system type selection"""
-    global selected_system_type
-    selected_system_type = system_type_var.get()
+debug_switch = True
 
-    if selected_system_type in ["binary", "random"]:
-        system_type_selector.destroy()
-    else:
-        # Hide system type frame and show body number frame
-        system_type_frame.pack_forget()
-        top_frame.pack(fill="x", padx=10, pady=5)
-        error_label.pack(pady=5)
-        fields_frame.pack(fill="both", expand=True)
-        system_type_selector.destroy()
+# Global variables
+selected_system_type = None
+requested_gravitational_system_data = None
+entries = []
 
-system_type_selector = tk.Tk()
-system_type_selector.title("Custom gravitational body simulation")
-
-# Create system type selection frame
-system_type_frame = ttk.Frame(system_type_selector, padding=10)
-system_type_frame.pack(fill="x", padx=10, pady=5)
-
-ttk.Label(system_type_frame, text="Select system type:").pack(pady=5)
-system_type_var = tk.StringVar(value="custom")
-for system_type in ["binary", "random", "custom"]:
-    ttk.Radiobutton(system_type_frame, 
-                    text=system_type.capitalize(),
-                    variable=system_type_var,
-                    value=system_type).pack(pady=2)
-
-ttk.Button(system_type_frame, 
-          text="Continue",
-          command=system_type_selected).pack(pady=10)
-
-def create_custom_system_fields():
-    """Generate fields for N bodies."""
-    # Clear previous fields
-    for widget in fields_frame.winfo_children():
-        widget.destroy()
-
+def validate_numeric_input(P):
+    """Validate if input is numeric"""
+    if P == "" or P == "-":
+        return True
     try:
-        n_bodies = int(n_bodies_var.get())
-        if n_bodies <= 0:
-            raise ValueError("Number of bodies must be positive.")
-    except ValueError as e:
-        error_label.config(text=f"Error: {e}")
-        return
+        float(P)
+        return True
+    except ValueError:
+        return False
 
-    error_label.config(text="")  # Clear error message
+def check_form_complete():
+    """Check if all fields are filled"""
+    try:
+        for body_entries in entries:
+            for entry in body_entries.values():
+                if entry.get() == "":
+                    return False
+        return True
+    except Exception:
+        return False
 
-    # Create labels and entry fields for each body
-    global entries
-    entries = []  # Reset entries list to store new input fields
-    for i in range(n_bodies):
-        ttk.Label(fields_frame, text=f"Body {i+1}:").grid(row=i, column=0, sticky="w", padx=5, pady=2)
+def create_fields():
+    """Create input fields based on number of bodies"""
+    try:
+        n = int(n_bodies_var.get())
+        if n <= 0:
+            raise ValueError
+        
+        # Clear existing fields
+        for widget in fields_frame.winfo_children():
+            widget.destroy()
+        entries.clear()
+        
+        # Create new fields
+        for i in range(n):
+            body_frame = ttk.LabelFrame(fields_frame, text=f"Body {i+1}", padding=5)
+            body_frame.pack(fill="x", padx=5, pady=5)
+            
+            body_entries = {}
+            
+            # Mass field
+            ttk.Label(body_frame, text="Mass:").grid(row=0, column=0, padx=5)
+            mass_entry = ttk.Entry(body_frame, validate="key", 
+                                 validatecommand=(numeric_validate, "%P"))
+            mass_entry.grid(row=0, column=1, padx=5)
+            body_entries['mass'] = mass_entry
+            
+            # Position fields
+            pos_frame = ttk.Frame(body_frame)
+            pos_frame.grid(row=1, column=0, columnspan=2, pady=5)
+            
+            ttk.Label(pos_frame, text="Position (X, Y):").grid(row=0, column=0, padx=5)
+            pos_x_entry = ttk.Entry(pos_frame, validate="key",
+                                  validatecommand=(numeric_validate, "%P"))
+            pos_x_entry.grid(row=0, column=1, padx=5)
+            body_entries['pos_x'] = pos_x_entry
+            
+            pos_y_entry = ttk.Entry(pos_frame, validate="key",
+                                  validatecommand=(numeric_validate, "%P"))
+            pos_y_entry.grid(row=0, column=2, padx=5)
+            body_entries['pos_y'] = pos_y_entry
+            
+            # Velocity fields
+            vel_frame = ttk.Frame(body_frame)
+            vel_frame.grid(row=2, column=0, columnspan=2, pady=5)
+            
+            ttk.Label(vel_frame, text="Velocity (X, Y):").grid(row=0, column=0, padx=5)
+            vel_x_entry = ttk.Entry(vel_frame, validate="key",
+                                  validatecommand=(numeric_validate, "%P"))
+            vel_x_entry.grid(row=0, column=1, padx=5)
+            body_entries['vel_x'] = vel_x_entry
+            
+            vel_y_entry = ttk.Entry(vel_frame, validate="key",
+                                  validatecommand=(numeric_validate, "%P"))
+            vel_y_entry.grid(row=0, column=2, padx=5)
+            body_entries['vel_y'] = vel_y_entry
+            
+            entries.append(body_entries)
+        
+        submit_button.pack(pady=10)
+        root.bind('<KeyRelease>', lambda e: check_entry_completion())
+        
+    except ValueError:
+        messagebox.showerror("Error", "Please enter a valid positive number")
 
-        body_entries = {}
-
-        ttk.Label(fields_frame, text="Mass:").grid(row=i, column=1, sticky="e", padx=5)
-        mass_entry = ttk.Entry(fields_frame, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
-        mass_entry.grid(row=i, column=2, padx=5)
-        body_entries['mass'] = mass_entry
-
-        ttk.Label(fields_frame, text="Vel X:").grid(row=i, column=3, sticky="e", padx=5)
-        vel_x_entry = ttk.Entry(fields_frame, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
-        vel_x_entry.grid(row=i, column=4, padx=5)
-        body_entries['vel_x'] = vel_x_entry
-
-        ttk.Label(fields_frame, text="Vel Y:").grid(row=i, column=5, sticky="e", padx=5)
-        vel_y_entry = ttk.Entry(fields_frame, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
-        vel_y_entry.grid(row=i, column=6, padx=5)
-        body_entries['vel_y'] = vel_y_entry
-
-        ttk.Label(fields_frame, text="Pos X:").grid(row=i, column=7, sticky="e", padx=5)
-        pos_x_entry = ttk.Entry(fields_frame, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
-        pos_x_entry.grid(row=i, column=8, padx=5)
-        body_entries['pos_x'] = pos_x_entry
-
-        ttk.Label(fields_frame, text="Pos Y:").grid(row=i, column=9, sticky="e", padx=5)
-        pos_y_entry = ttk.Entry(fields_frame, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
-        pos_y_entry.grid(row=i, column=10, padx=5)
-        body_entries['pos_y'] = pos_y_entry
-
-        entries.append(body_entries)
-
-    # Add trace to enable/disable the Submit button
-    for body_entries in entries:
-        for key, entry in body_entries.items():
-            entry.bind("<KeyRelease>", check_form_complete)
-
-    # Disable the Submit button initially
-    submit_button.config(state="disabled")
+def check_entry_completion(*args):
+    """Check if all entries are completed and enable/disable submit button"""
+    try:
+        if check_form_complete():
+            submit_button.config(state="normal")
+        else:
+            submit_button.config(state="disabled")
+    except Exception:
+        submit_button.config(state="disabled")
 
 def collect_data():
-    """Collect data from all entry fields, store it in a dictionary, and close the window."""
+    """Collect data from all entry fields"""
     global requested_gravitational_system_data
     requested_gravitational_system_data = {}
 
@@ -119,88 +116,86 @@ def collect_data():
             vel_y = float(body_entries['vel_y'].get())
             pos_x = float(body_entries['pos_x'].get())
             pos_y = float(body_entries['pos_y'].get())
-
-            requested_gravitational_system_data[f"Body_{i+1}"] = {
+            
+            requested_gravitational_system_data[f"body_{i+1}"] = {
                 "mass": mass,
-                "velocity": {"x": vel_x, "y": vel_y},
-                "position": {"x": pos_x, "y": pos_y},
+                "velocity": [vel_x, vel_y],
+                "position": [pos_x, pos_y]
             }
-
-        if debug_switch == True:
-            print("Collected Data:", requested_gravitational_system_data)  # Print collected data to console for debugging
-
-        
-
-        root.destroy()  # Close the window
+        root.destroy()
     except ValueError:
-        messagebox.showerror("Error", "Please fill in all fields with numeric values.")
+        messagebox.showerror("Error", "Please ensure all fields contain valid numbers")
 
+def initialize_system_selection():
+    """Create initial window for system type selection"""
+    selection_window = tk.Tk()
+    selection_window.title("System Type Selection")
+    
+    def on_system_select():
+        global selected_system_type
+        selected_system_type = system_type_var.get()
+        selection_window.destroy()
+        if selected_system_type == "custom":
+            create_custom_system_window()
+    
+    system_type_frame = ttk.Frame(selection_window, padding=10)
+    system_type_frame.pack(fill="x", padx=10, pady=5)
+    
+    ttk.Label(system_type_frame, text="Select system type:").pack(pady=5)
+    system_type_var = tk.StringVar(value="custom")
+    for system_type in ["binary", "random", "custom"]:
+        ttk.Radiobutton(system_type_frame, 
+                        text=system_type.capitalize(),
+                        variable=system_type_var,
+                        value=system_type).pack(pady=2)
+    
+    ttk.Button(system_type_frame, 
+              text="Continue",
+              command=on_system_select).pack(pady=10)
+    
+    selection_window.mainloop()
+    return selected_system_type
 
-def validate_numeric_input(new_value):
-    """Validate that the input is a valid numeric value (including negative numbers)."""
-    #are all numbers okay?
-    if new_value == "" or new_value == "-" or new_value.replace("-", "", 1).replace(".", "", 1).isdigit():
-        return True
-        
-    return False
+def create_custom_system_window():
+    """Create the main window for custom system design"""
+    global root, fields_frame, n_bodies_var, numeric_validate, submit_button
+    
+    root = tk.Tk()
+    root.title("Custom System Designer")
+    
+    # Register validation functions
+    numeric_validate = root.register(validate_numeric_input)
+    check_form_complete_validate = root.register(check_form_complete)
+    
+    # Create frames
+    top_frame = ttk.Frame(root, padding=10)
+    top_frame.pack(fill="x", padx=10, pady=5)
+    
+    ttk.Label(top_frame, text="Enter required number of bodies:").grid(row=0, column=0, sticky="w", padx=5)
+    n_bodies_var = tk.StringVar()
+    n_bodies_entry = ttk.Entry(top_frame, textvariable=n_bodies_var, width=10,
+                              validate="key", validatecommand=(numeric_validate, "%P"))
+    n_bodies_entry.grid(row=0, column=1, padx=5)
+    
+    generate_button = ttk.Button(top_frame, text="Generate bodies", command=create_fields)
+    generate_button.grid(row=0, column=2, padx=5)
+    
+    # Create fields frame
+    fields_frame = ttk.Frame(root, padding=10)
+    fields_frame.pack(fill="both", expand=True)
+    
+    # Create submit button
+    submit_button = ttk.Button(root, text="Get going!", command=collect_data, state="disabled")
+    
+    root.mainloop()
 
-def check_form_complete(event=None):
-    """Enable the Submit button if all fields are completed and valid."""
-    try:
-        for body_entries in entries:
-            for key, entry in body_entries.items():
-                value = entry.get()
-                if not value or not validate_numeric_input(value):
-                    submit_button.config(state="disabled")
-                    return
-        submit_button.config(state="normal")
-    except Exception:
-        submit_button.config(state="disabled")
+def main():
+    """Main entry point"""
+    return initialize_system_selection()
 
-
-# Create main application window
-root = tk.Tk()
-root.title("Custom gravitational body simulation")
-
-# Register validation function
-numeric_validate = root.register(validate_numeric_input)
-
-check_form_complete_validate = root.register(check_form_complete)
-
-# Input for number of bodies
-top_frame = ttk.Frame(root, padding=10)
-top_frame.pack(fill="x", padx=10, pady=5)
-
-ttk.Label(top_frame, text="Enter required number of bodies:").grid(row=0, column=0, sticky="w", padx=5)
-n_bodies_var = tk.StringVar()
-n_bodies_entry = ttk.Entry(top_frame, textvariable=n_bodies_var, width=10, validate="key", validatecommand=(numeric_validate, "%P"))
-n_bodies_entry.grid(row=0, column=1, padx=5)
-
-generate_button = ttk.Button(top_frame, text="Generate bodies", command=create_custom_system_fields)
-generate_button.grid(row=0, column=2, padx=5)
-
-# Error label
-error_label = ttk.Label(root, text="", foreground="red")
-error_label.pack(pady=5)
-
-# Frame to hold dynamically created fields
-fields_frame = ttk.Frame(root, padding=10)
-fields_frame.pack(fill="both", expand=True)
-
-# Submit button
-submit_button = ttk.Button(root, text="Get going!", command=collect_data, state="disabled")
-submit_button.pack(pady=10)
-
-# Initialize entries list to store entry widgets
-entries = []
-
-# Run the application
-root.mainloop()
-
-if debug_switch:
-    print("System type selected:", selected_system_type)
-    if selected_system_type == "custom" and 'requested_gravitational_system_data' in globals():
-        print("requested data:")
-        for body in requested_gravitational_system_data:
-            print(f"{body}:")
-            print(requested_gravitational_system_data[body])
+if __name__ == "__main__":
+    selected_type = main()
+    if debug_switch:
+        print(f"Selected system type: {selected_type}")
+        if selected_type == "custom" and requested_gravitational_system_data:
+            print("Requested data:", requested_gravitational_system_data)
