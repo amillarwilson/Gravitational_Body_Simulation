@@ -19,6 +19,6 @@ if __name__ == "__main__":
     debug_switch = True
     if debug_switch:
         print(f"Selected system type: {selected_type}")
-        if selected_type == "custom" and requested_gravitational_system_data:
-            print("Requested data:", requested_gravitational_system_data)
+        if selected_type == "custom" and test_system.requested_gravitational_system_data:
+            print("Requested data:", test_system.requested_gravitational_system_data)
 #pass GUI output to system simulator
