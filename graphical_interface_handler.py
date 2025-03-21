@@ -6,24 +6,22 @@ Description:
 This file contains the GUI handler class, which takes in user input on system type to simulate.
 """
 
-#TODO: convert to a class so it can be imported into application_orchestrator.py
+#TODO: convert global vars to local ones
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-debug_switch = True
 
-# Global variables
-selected_system_type = None
-requested_gravitational_system_data = None
-entries = []
 
 #convert below to a class
 
 class GUI_coordinator:
     def __init__(self):
-        pass
+        self.selected_system_type = None
+        self.requested_gravitational_system_data = None
+        self.entries = []
+
 
     ##input validation functions##
 
@@ -43,7 +41,7 @@ class GUI_coordinator:
     def check_form_complete(self):
         """Check if all fields are filled"""
         try:
-            for body_entries in entries:
+            for body_entries in self.entries:
                 for entry in body_entries.values():
                     if entry.get() == "":
                         return False
@@ -62,7 +60,7 @@ class GUI_coordinator:
             # Clear existing fields
             for widget in fields_frame.winfo_children():
                 widget.destroy()
-            entries.clear()
+            self.entries.clear()
             
             # Create new fields
             for i in range(n):
@@ -108,7 +106,7 @@ class GUI_coordinator:
                 vel_y_entry.grid(row=0, column=2, padx=5)
                 body_entries['vel_y'] = vel_y_entry
                 
-                entries.append(body_entries)
+                self.entries.append(body_entries)
             
             submit_button.pack(pady=10)
             root.bind('<KeyRelease>', lambda e: self.check_entry_completion())
@@ -129,18 +127,17 @@ class GUI_coordinator:
 
     def collect_data(self):
         """Collect data from all entry fields"""
-        global requested_gravitational_system_data
-        requested_gravitational_system_data = {}
+        self.requested_gravitational_system_data = {}
 
         try:
-            for i, body_entries in enumerate(entries):
+            for i, body_entries in enumerate(self.entries):
                 mass = float(body_entries['mass'].get())
                 vel_x = float(body_entries['vel_x'].get())
                 vel_y = float(body_entries['vel_y'].get())
                 pos_x = float(body_entries['pos_x'].get())
                 pos_y = float(body_entries['pos_y'].get())
                 
-                requested_gravitational_system_data[f"body_{i+1}"] = {
+                self.requested_gravitational_system_data[f"body_{i+1}"] = {
                     "mass": mass,
                     "velocity": [vel_x, vel_y],
                     "position": [pos_x, pos_y]
@@ -155,10 +152,9 @@ class GUI_coordinator:
         selection_window.title("System Type Selection")
         
         def on_system_select():
-            global selected_system_type
-            selected_system_type = system_type_var.get()
+            self.selected_system_type = system_type_var.get()
             selection_window.destroy()
-            if selected_system_type == "custom":
+            if self.selected_system_type == "custom":
                 self.create_custom_system_window()
         
         system_type_frame = ttk.Frame(selection_window, padding=10)
@@ -177,7 +173,7 @@ class GUI_coordinator:
                 command=on_system_select).pack(pady=10)
         
         selection_window.mainloop()
-        return selected_system_type
+        return self.selected_system_type
 
     def create_custom_system_window(self):
         """Create the main window for custom system design"""
@@ -219,7 +215,8 @@ class GUI_coordinator:
 if __name__ == "__main__":
     test_system = GUI_coordinator()
     selected_type = test_system.main()
+    debug_switch = True
     if debug_switch:
         print(f"Selected system type: {selected_type}")
-        if selected_type == "custom" and requested_gravitational_system_data:
-            print("Requested data:", requested_gravitational_system_data)
+        if selected_type == "custom" and test_system.requested_gravitational_system_data:
+            print("Requested data:", test_system.requested_gravitational_system_data)
