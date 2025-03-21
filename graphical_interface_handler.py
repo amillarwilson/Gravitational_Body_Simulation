@@ -1,3 +1,13 @@
+"""
+File: graphical_interface_handler.py
+Author: Andrew Millar-Wilson
+
+Description:
+This file contains the GUI handler class, which takes in user input on system type to simulate.
+"""
+
+#TODO: convert to a class so it can be imported into application_orchestrator.py
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
