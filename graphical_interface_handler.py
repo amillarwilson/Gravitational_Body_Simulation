@@ -19,6 +19,14 @@ selected_system_type = None
 requested_gravitational_system_data = None
 entries = []
 
+#convert below to a class
+
+class GUI_coordinator:
+    def __init__(self):
+        pass
+
+    #TODO: add the below functions one at a time to ensure it still works
+
 def validate_numeric_input(P):
     """Validate if input is numeric"""
     if P == "" or P == "-":
