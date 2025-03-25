@@ -12,6 +12,7 @@ planetary movement
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import warnings
 
 
 #set G
@@ -36,8 +37,8 @@ class System:
     """
 
     
-    def __init__(self, system_type = "binary", num_bodies = 3):
-        if type(num_bodies) is int:
+    def __init__(self, system_type = "binary", num_bodies = None, custom_system_info_dict = None): #set as none to allow binary and random systems to be initialised
+        if type(num_bodies) == int or num_bodies == None:
             self.num_bodies = num_bodies
         else:
             TypeError("Number of bodies must be an integer")
@@ -54,10 +55,13 @@ class System:
                     a function which takes in the number of bodies and
                     instantiates a Body
                     """
-                    self.num_bodies = np.random.randint(50)
+                    if num_bodies == None:
+                        self.num_bodies = np.random.randint(50)
+                    else:
+                        self.num_bodies = num_bodies
 
                     self.bodies = []
-                    for _ in range(num_bodies):
+                    for _ in range(self.num_bodies):
                         #random mass within a reasonable range
                         mass = np.random.uniform(1e9, 1e12)
                         pos = np.random.rand(2) #2D space
@@ -88,23 +92,25 @@ class System:
                 
                 initialise_binary_system()
     
-            """
-            elif self.system_type == "custom":
-                    def initialise_custom_bodies(N, masses, poses, vels):
-                    #A function to intialise custom systems - default is binary system
-
-                    #will eventually be used in tandem with the GUI, but for now it is fed variable
-                    #values from function calls
-
-                    bodies=[]
-
-                    for i in range(0,N-1):
-                        bodies.append(Body(masses[i],poses[i],vels[i]))
-                    
-                    return bodies
             
-                    #TODO: create the custom API
-            """
+            elif self.system_type == "custom":
+                def initialise_custom_bodies():
+                    #A function to intialise custom systems using the GUI
+
+                    self.custom_system_info_dict = custom_system_info_dict
+
+                    self.num_bodies = len(custom_system_info_dict)
+
+                    self.bodies = []
+            
+                    for body in custom_system_info_dict:
+                        mass = custom_system_info_dict[body]["mass"]
+                        pos = np.array(custom_system_info_dict[body]["position"])
+                        vel = np.array(custom_system_info_dict[body]["velocity"])
+                        self.bodies.append(Body(mass, pos, vel))
+
+                initialise_custom_bodies()
+            
             print("System initialised")
 
         else:
@@ -241,88 +247,10 @@ class System:
         return [self.planet_plot]
     
 
-system_1 = System("binary")
+if __name__ == "__main__":
+    warnings.warn("This file is not meant to be run - it is called from 'main.py'. Running a binary system as a test of the system simulator")
+    system_1 = System("binary")
 
-system_1.plot_system()
-
-
-#custom testing
-
-#sections to move to main running file and possibly refactor or add to TKINTER to make it more accessible
-#so far there are two sims: 4 random bodies and an eliptical, unstable orbit like a black hole
-#I need to refactor the simulation calls later to easily call the function, will also make
-#GUi-ing the thing easier
-
-#random bodies
-"""
-#set "N"
-n_bodies = 4
-
-#initialise bodies
-bodies = initialise_random_bodies(n_bodies)
+    system_1.plot_system()
 
 
-#initialise plot
-fig, ax = plt.subplots()
-scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
-                     s=[(body.mass/1e9) for body in bodies])
-
-ax.set_title('4 Randomly positioned bodies')
-
-#add colourbar
-cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
-
-
-#dynamically set axis limits so the plot focuses in on the action
-ax.set_xlim(min(body.pos[0] for body in bodies) - 0.1, max(body.pos[0] for body in bodies) + 0.1)
-ax.set_ylim(min(body.pos[1] for body in bodies) - 0.1, max(body.pos[1] for body in bodies) + 0.1)
-
-#set integration step
-dt = 0.001
-
-#animate
-animation = FuncAnimation(fig, update, frames = 100, interval = 50, blit = True)
-
-
-#show animation
-plt.show()
-
-#clear bodies
-bodies = []
-
-#binary system
-
-n_bodies = 2
-
-#initialise bodies
-bodies = initialise_binary_system()
-
-
-#initialise plot
-fig, ax = plt.subplots()
-scatter = ax.scatter([body.pos[0] for body in bodies], [body.pos[1] for body in bodies],
-                     s=[(body.mass/1e8) for body in bodies])
-cbar = plt.colorbar(scatter, ax=ax, label='Velocity Magnitude')
-ax.set_title('An unstable binary system')
-
-#static axis limits, the smulation will behave the same way each time and the best action occurs between 0,0 and 1,1
-ax.set_xlim(0,1)
-ax.set_ylim(0,1)
-
-#set integration step
-dt = 0.01
-
-#animate
-animation = FuncAnimation(fig, update, frames = 100, interval = 50, blit = False)
-
-
-#show animation
-plt.show()
-
-#clear bodies
-bodies = []
-
-#to do: 
-
-#0) create a third file, the application handler, which calls the GUI and passes the result into the system simulator
-"""

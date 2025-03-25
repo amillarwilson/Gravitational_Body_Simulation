@@ -6,7 +6,6 @@ Description:
 This file contains the GUI handler class, which takes in user input on system type to simulate.
 """
 
-#TODO: convert global vars to local ones
 
 import tkinter as tk
 from tkinter import ttk
@@ -35,7 +34,6 @@ class GUI_coordinator:
             return True
         except ValueError:
             return False
-    #TODO: add the below functions one at a time to ensure it still works
 
     #check if all fields are filled
     def check_form_complete(self):
