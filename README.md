@@ -91,7 +91,7 @@ Where:
 
   <p>
     <br />
-    Step 3: simulation output
+    Step 3: simulation output (This is a still - the actual output is animated)
     <br />
   </p>
     <img width="479" alt="screen_4" src="https://github.com/user-attachments/assets/ec20b056-5f02-4631-945c-5d09ddbe27ff" />
