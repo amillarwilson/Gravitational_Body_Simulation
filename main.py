@@ -22,6 +22,8 @@ if __name__ == "__main__":
         print(f"Selected system type: {selected_type}")
         if selected_type == "custom" and test_system.requested_gravitational_system_data:
             print("Requested data:", test_system.requested_gravitational_system_data)
+
+
 #pass GUI output to system simulator
 
-test_system <- system_simulator.System()
+test_system = system_simulator.System()
