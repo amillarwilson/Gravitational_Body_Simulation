@@ -61,7 +61,7 @@ Where:
 <h4 align="center">How to run a simulation</h3>
   <p align="left">
     <br />
-        For easier user experience, I included a tkinter GUI. The GUI has two phases, firstly, the desired system configuraiton is picked, from either a rapidly decomposing binary system, a random set of bodies with random positions, masses, and velocities, or a custom system. If the binary or random systems are selected, the simulation will run, however if custom is selected, a new GUI page will appear, prompting the user to input the number of bodies required, then the mass, position, and velocity of each body. After this is completed, the custom simulation will render. See the screen grabs below for a guide.
+        For easier user experience, I included a tkinter GUI. To use the GUI-based program, run "main.py". The GUI has two phases, firstly, the desired system configuraiton is picked, from either a rapidly decomposing binary system, a random set of bodies with random positions, masses, and velocities, or a custom system. If the binary or random systems are selected, the simulation will run, however if custom is selected, a new GUI page will appear, prompting the user to input the number of bodies required, then the mass, position, and velocity of each body. After this is completed, the custom simulation will render. See the screen grabs below for a guide.
     <br />
     <b>GUI use</b> 
     <br />
